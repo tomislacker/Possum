@@ -229,15 +229,12 @@ def get_existing_site_packages(venv_path):
 
 
 def install_packages():
-    p = subprocess.Popen(
+    subprocess.check_call(
         [
             PIPENV_PATH,
             'install'
-        ],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
+        ]
     )
-    p.communicate()
 
 
 def _copy(src, dst):
@@ -540,6 +537,12 @@ def main():
             logger.info(f'{func}: Virtual environment created at {venv_path}')
 
             do_not_copy = get_existing_site_packages(venv_path)
+            logger.info(f'{func}: do_not_copy:')
+            logger.info('\n'.join([
+                f'  - {dnc}'
+                for dnc in sorted(do_not_copy)
+            ]))
+            logger.info('')
 
             logger.info(f'{func}: Installing requirements...')
             install_packages()
